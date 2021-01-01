@@ -11,26 +11,11 @@
 #include "board.hpp"
 #include "gui.hpp"
 #include "move.hpp"
+#include "util.hpp"
 #include <ctime>
 #include <iostream>
 
 using namespace chess; // NOLINT
-
-unsigned long perft(board& b, board_history& h, int depth, color turn) {
-  turn = flipped_turn(turn);
-  if (depth == 0) return 1;
-  unsigned long leafs = 0;
-  for (move m: valid_moves(b, turn)) {
-    if (b.get(m.to).pce == piece::king || b.get(m.to).pce == piece::king_castle) {
-      ++leafs;
-      continue;
-    }
-    do_move(m, b, h);
-    leafs += perft(b, h, depth - 1, turn);
-    undo_move(b, h);
-  }
-  return leafs;
-}
 
 int main() {
   std::cout << "\nChesscpu 1.0\n\n";
@@ -38,7 +23,7 @@ int main() {
                "well).\n1: change color (AI will make this move)\n2: exit.\n\n";
   board         b;
   board_history h;
-  init_classic_board(b);
+  b.init();
 
   color turn     = color::white;
   color ai_color = color::black;
@@ -79,7 +64,7 @@ int main() {
       continue;
     }
     if (mv.from == 1) {
-      ai_color = flipped_turn(ai_color);
+      ai_color = flip_turn(ai_color);
       continue;
     }
     if (mv.from == 2) {
@@ -88,7 +73,7 @@ int main() {
     }
 
     do_move(mv, b, h);
-    turn = flipped_turn(turn);
+    turn = flip_turn(turn);
 
     ai_has_king = human_has_king = false;
     for (size_t i = 21; i < 99; ++i) { // board.h about these magic numbers

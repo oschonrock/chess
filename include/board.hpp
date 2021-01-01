@@ -22,6 +22,8 @@ const size_t board_size = 10 * 12;
 
 enum class color { white, black, none };
 
+color flip_turn(color turn);
+
 enum class piece {
   king,        // a king without castle potential
   king_castle, // a king with castle potential
@@ -37,8 +39,8 @@ enum class piece {
 };
 
 struct square {
-  color   pce_color;
-  piece   pce;
+  color pce_color;
+  piece pce;
   square(piece, color);
   square();
 };
@@ -48,10 +50,9 @@ private:
   std::array<square, board_size> squares;
 
 public:
+  void                 init();
   void                 set(size_t where, square);
   [[nodiscard]] square get(size_t where) const;
 };
-
-void init_classic_board(board&);
 
 } // namespace chess
