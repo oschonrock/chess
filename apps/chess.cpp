@@ -31,7 +31,7 @@ int main() {
   bool ai_has_king    = true;
   bool human_has_king = true;
 
-  constexpr bool run_perf_test = false;
+  constexpr bool run_perf_test = true;
   if (run_perf_test) {
     unsigned long t = time(nullptr);
     std::cout << "DEBUG: Perft(5) result (expecting 4897256): " << perft(b, h, 5, color::black);

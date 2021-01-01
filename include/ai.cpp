@@ -5,7 +5,7 @@
 
 namespace chess {
 
-std::random_device rnd_seed; // NOLINT
+std::random_device rnd_seed;               // NOLINT
 std::mt19937       rnd_engine(rnd_seed()); // NOLINT
 
 void moveorder(move_set& ms) { std::shuffle(ms.begin(), ms.end(), rnd_engine); }
@@ -40,14 +40,15 @@ static int evaluate_leaf(const board& b) {
   return sum;
 }
 
-int ai_move(board& b, board_history& bh, color turn, int depth, move& _bm, int alpha, int beta) {
+int ai_move(board& b, board_history& bh, color turn, int depth, move& best_move, int alpha,
+            int beta) {
   /*
   MoveSet valid = valid_moves(b, turn);
   _bm = valid[mt()%valid.size()];
   return 0;
   */
 
-  move best_move;
+  move bm;
   int  best_score = turn == color::white ? -300 : 300;
   if (depth == 0) return evaluate_leaf(b);
 
@@ -57,20 +58,20 @@ int ai_move(board& b, board_history& bh, color turn, int depth, move& _bm, int a
   for (move m: vmoves) {
     // if(depth == 8) // Temporary hack to show progress
     //  std::cout<<"\r"<<++progress<<"/"<<vmoves.size()<<std::flush;
-
+    
     if (b.get(m.to).pce == piece::king || b.get(m.to).pce == piece::king_castle) {
       best_score = turn == color::white ? 200 + depth : -200 - depth;
-      best_move  = m;
+      bm         = m;
       break;
     }
 
     do_move(m, b, bh);
-    int new_score = ai_move(b, bh, flip_turn(turn), depth - 1, _bm, alpha, beta);
+    int new_score = ai_move(b, bh, flip_turn(turn), depth - 1, best_move, alpha, beta);
     undo_move(b, bh);
 
     if ((turn == color::white && new_score > best_score) ||
         (turn == color::black && new_score < best_score)) {
-      best_move  = m;
+      bm         = m;
       best_score = new_score;
 
       if (turn == color::black) {
@@ -84,7 +85,7 @@ int ai_move(board& b, board_history& bh, color turn, int depth, move& _bm, int a
       }
     }
   }
-  _bm = best_move;
+  best_move = bm;
   return best_score;
 }
 } // namespace chess

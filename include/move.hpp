@@ -34,7 +34,7 @@ struct board_change {
   square old_square;
 };
 
-using board_history = std::list<board_change>;
+using board_history = std::vector<board_change>;
 using move_set      = std::vector<move>;
 
 void undo_move(board&, board_history&);
