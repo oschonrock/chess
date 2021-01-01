@@ -36,9 +36,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-g -O3 -Wall -Wextra)
 
 # this is not nice, but needed to add gv to includes in compiler_database for .hpp files which drives clangd highlighting
-# include_directories(include include/toolbelt include/ryu /usr/include/graphviz)
+include_directories(include)
 
-# find_package(libmongocxx REQUIRED)
-# add_executable(translupe apps/translupe.cpp)
-# target_link_libraries(translupe PUBLIC ${LIBMONGOCXX_LIBRARIES} cgraph gvc)
-# target_include_directories(translupe PUBLIC ${LIBMONGOCXX_INCLUDE_DIRS} /usr/include/graphviz)
+add_executable(chess apps/chess.cpp)
+target_sources(chess PRIVATE include/board.cpp include/move.cpp include/ai.cpp include/gui.cpp)
