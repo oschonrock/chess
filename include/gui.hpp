@@ -17,7 +17,7 @@
 
 namespace chess {
 
-void print_board(const board&, move last_move);
+void print_board(const board& b, move last_move);
 
 /* Returns when one of the provided valid moves is read */
 move read_move(const move_set& valid_moves, color turn);

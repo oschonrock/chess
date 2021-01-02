@@ -19,7 +19,7 @@ using namespace chess; // NOLINT
 
 int main() {
   std::cout << "\nChesscpu 1.0\n\n";
-  std::cout << "Commands:\nyxyx: fromto move.\n0: regret move (last AI move will be reverted as "
+  std::cout << "Commands:\ne2e4: fromto move.\n0: regret move (last AI move will be reverted as "
                "well).\n1: change color (AI will make this move)\n2: exit.\n\n";
   board         b;
   b.init();

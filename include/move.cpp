@@ -1,7 +1,7 @@
 #include "move.hpp"
 #include <iostream>
 
-// Read move.h for specifications
+// Read move.hpp for specifications
 
 namespace chess {
 

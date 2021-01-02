@@ -31,8 +31,6 @@ struct move {
 
 using move_set      = std::vector<move>;
 
-void undo_move(board&);
-
 /* Castling is identified by king move to its castling destination if permitted.
    Pawn promotion move deduced.
    All other moves are unconditional moves.
