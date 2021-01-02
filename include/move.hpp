@@ -29,25 +29,15 @@ struct move {
   ssize_t to_ = 0;
 };
 
-struct board_change {
-  board_change() : where(move_done) {} // terminator, at end of move sequence
-  [[nodiscard]] bool is_terminator() const { return where == move_done; }
-  size_t             where;
-  square             old_square;
-
-  constexpr static size_t move_done = board_size;
-};
-
-using board_history = std::vector<board_change>;
 using move_set      = std::vector<move>;
 
-void undo_move(board&, board_history&);
+void undo_move(board&);
 
 /* Castling is identified by king move to its castling destination if permitted.
    Pawn promotion move deduced.
    All other moves are unconditional moves.
 */
-void do_move(move, board&, board_history&, piece pawn_promotion = piece::queen);
+void do_move(move, board&, piece pawn_promotion = piece::queen);
 
 move_set valid_moves(board&, color turn); // This is the move generator
 

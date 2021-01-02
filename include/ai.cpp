@@ -40,7 +40,7 @@ static int evaluate_leaf(const board& b) {
   return sum;
 }
 
-int ai_move(board& b, board_history& bh, color turn, int depth, move& best_move, int alpha,
+int ai_move(board& b, color turn, int depth, move& best_move, int alpha,
             int beta) {
   /*
   MoveSet valid = valid_moves(b, turn);
@@ -65,9 +65,9 @@ int ai_move(board& b, board_history& bh, color turn, int depth, move& best_move,
       break;
     }
 
-    do_move(m, b, bh);
-    int new_score = ai_move(b, bh, flip_turn(turn), depth - 1, best_move, alpha, beta);
-    undo_move(b, bh);
+    do_move(m, b);
+    int new_score = ai_move(b, flip_turn(turn), depth - 1, best_move, alpha, beta);
+    undo_move(b);
 
     if ((turn == color::white && new_score > best_score) ||
         (turn == color::black && new_score < best_score)) {

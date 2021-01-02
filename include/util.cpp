@@ -8,7 +8,7 @@ namespace chess {
 
 // for testing purposes
 
-unsigned long performance_test(board& b, board_history& bh, int depth, color turn) {
+unsigned long performance_test(board& b, int depth, color turn) {
   turn = flip_turn(turn);
   if (depth == 0) return 1;
   unsigned long leafs = 0;
@@ -17,27 +17,27 @@ unsigned long performance_test(board& b, board_history& bh, int depth, color tur
       ++leafs;
       continue;
     }
-    do_move(m, b, bh);
-    leafs += performance_test(b, bh, depth - 1, turn);
-    undo_move(b, bh);
+    do_move(m, b);
+    leafs += performance_test(b, depth - 1, turn);
+    undo_move(b);
   }
   return leafs;
 }
 
-int run_perf_test(board& b, board_history& bh) {
+int run_perf_test(board& b) {
 
   unsigned long t = time(nullptr);
   std::cerr << "DEBUG: Perft(5) = (expecting 4897256): "
-            << performance_test(b, bh, 5, color::black);
+            << performance_test(b, 5, color::black);
   t = time(nullptr) - t;
   std::cout << "\nTime " << t << "\n";
   return 0;
 }
 
-int run_ai_test(board& b, board_history& bh, color turn) {
+int run_ai_test(board& b, color turn) {
   move          mv;
   unsigned long t = time(nullptr);
-  ai_move(b, bh, turn, 7, mv);
+  ai_move(b, turn, 7, mv);
   t = time(nullptr) - t;
   std::cout << "\nAI Time: " << t << "\n";
   return 0;

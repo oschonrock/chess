@@ -20,8 +20,8 @@
 namespace chess {
 
 // for testing purposes
-unsigned long performance_test(board& b, board_history& bh, int depth, color turn);
-int run_perf_test(board& b, board_history& bh);
-int run_ai_test(board& b, board_history& bh, color turn);
+unsigned long performance_test(board& b, int depth, color turn);
+int run_perf_test(board& b);
+int run_ai_test(board& b, color turn);
 
 } // namespace chess

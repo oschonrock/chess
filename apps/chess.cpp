@@ -22,7 +22,6 @@ int main() {
   std::cout << "Commands:\nyxyx: fromto move.\n0: regret move (last AI move will be reverted as "
                "well).\n1: change color (AI will make this move)\n2: exit.\n\n";
   board         b;
-  board_history bh;
   b.init();
 
   color turn     = color::white;
@@ -31,20 +30,20 @@ int main() {
   bool ai_has_king    = true;
   bool human_has_king = true;
 
-  // return run_perf_test(b, bh);
-  // return run_ai_test(b, bh, turn);
+  return run_perf_test(b);
+  // return run_ai_test(b, turn);
 
   move mv;
   while (ai_has_king && human_has_king) {
     print_board(b, mv);
     if (turn == ai_color)
-      ai_move(b, bh, turn, 7, mv);
+      ai_move(b, turn, 7, mv);
     else
       mv = read_move(valid_moves(b, turn), turn);
 
     if (mv.from_ == 0) {
-      undo_move(b, bh);
-      undo_move(b, bh);
+      undo_move(b);
+      undo_move(b);
       continue;
     }
     if (mv.from_ == 1) {
@@ -56,7 +55,7 @@ int main() {
       break;
     }
 
-    do_move(mv, b, bh);
+    do_move(mv, b);
     turn = flip_turn(turn);
 
     ai_has_king = human_has_king = false;

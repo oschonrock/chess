@@ -15,6 +15,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
@@ -49,6 +50,17 @@ struct square {
   piece pce       = piece::out_of_board;
 };
 
+struct board_change {
+  board_change() : where(move_done) {} // terminator, at end of move sequence
+  [[nodiscard]] bool is_terminator() const { return where == move_done; }
+  size_t             where;
+  square             old_square;
+
+  constexpr static size_t move_done = board_size;
+};
+
+using board_history = std::vector<board_change>;
+
 class board {
 private:
   std::array<square, board_size> squares;
@@ -65,6 +77,8 @@ public:
     if (where >= board_size) throw std::out_of_range("board::get : out of range error");
     return squares[where];
   }
+
+  board_history bh_;
 };
 
 } // namespace chess
