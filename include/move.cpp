@@ -5,13 +5,6 @@
 
 namespace chess {
 
-move::move(ssize_t _from, ssize_t _to) {
-  from = _from;
-  to   = _to;
-}
-
-move::move() = default;
-
 void undo_move(board& b, board_history& bh) {
   if (bh.empty()) return;
   if (bh.back().is_terminator()) bh.pop_back();
@@ -32,49 +25,49 @@ static void do_change(board& b, board_history& bh, size_t where, square new_squa
 
 void do_move(move m, board& b, board_history& bh, piece pawn_promotion) {
   // Pawn promotion
-  if (b.get(m.from).pce == piece::pawn && m.to / 10 == 2)
-    do_change(b, bh, m.from, square(pawn_promotion, color::white));
+  if (b.get(m.from_).pce == piece::pawn && m.to_ / 10 == 2)
+    do_change(b, bh, m.from_, square(pawn_promotion, color::white));
 
-  if (b.get(m.from).pce == piece::pawn && m.to / 10 == 9)
-    do_change(b, bh, m.from, square(pawn_promotion, color::black));
+  if (b.get(m.from_).pce == piece::pawn && m.to_ / 10 == 9)
+    do_change(b, bh, m.from_, square(pawn_promotion, color::black));
 
   // Move rook if castling
-  if (b.get(m.from).pce == piece::king_castle && (m.from - m.to == 2 || m.from - m.to == -2)) {
-    if (m.to == 23) {
+  if (b.get(m.from_).pce == piece::king_castle && (m.from_ - m.to_ == 2 || m.from_ - m.to_ == -2)) {
+    if (m.to_ == 23) {
       do_change(b, bh, 21, square(piece::none, color::none));
       do_change(b, bh, 24, square(piece::rook, color::black));
     }
 
-    if (m.to == 27) {
+    if (m.to_ == 27) {
       do_change(b, bh, 28, square(piece::none, color::none));
       do_change(b, bh, 26, square(piece::rook, color::black));
     }
 
-    if (m.to == 93) {
+    if (m.to_ == 93) {
       do_change(b, bh, 91, square(piece::none, color::none));
       do_change(b, bh, 94, square(piece::rook, color::white));
     }
 
-    if (m.to == 97) {
+    if (m.to_ == 97) {
       do_change(b, bh, 98, square(piece::none, color::none));
       do_change(b, bh, 96, square(piece::rook, color::white));
     }
   }
 
-  piece pawn_replaced = b.get(m.to).pce;
+  piece pawn_replaced = b.get(m.to_).pce;
   // Regular piece move
-  do_change(b, bh, m.to, b.get(m.from));
-  do_change(b, bh, m.from, square(piece::none, color::none));
+  do_change(b, bh, m.to_, b.get(m.from_));
+  do_change(b, bh, m.from_, square(piece::none, color::none));
 
   // Pawn replaced empty square
-  if (b.get(m.to).pce == piece::pawn && pawn_replaced == piece::none) {
+  if (b.get(m.to_).pce == piece::pawn && pawn_replaced == piece::none) {
     // En passant move
-    if (b.get(m.from - 1).pce == piece::pawn_en_passant &&
-        (m.from - m.to == 11 || m.from - m.to == -9))
-      do_change(b, bh, m.from - 1, square(piece::none, color::none));
-    else if (b.get(m.from + 1).pce == piece::pawn_en_passant &&
-             (m.from - m.to == 9 || m.from - m.to == -11))
-      do_change(b, bh, m.from + 1, square(piece::none, color::none));
+    if (b.get(m.from_ - 1).pce == piece::pawn_en_passant &&
+        (m.from_ - m.to_ == 11 || m.from_ - m.to_ == -9))
+      do_change(b, bh, m.from_ - 1, square(piece::none, color::none));
+    else if (b.get(m.from_ + 1).pce == piece::pawn_en_passant &&
+             (m.from_ - m.to_ == 9 || m.from_ - m.to_ == -11))
+      do_change(b, bh, m.from_ + 1, square(piece::none, color::none));
   }
 
   // clear flag of pawns with en passant potential
@@ -86,19 +79,19 @@ void do_move(move m, board& b, board_history& bh, piece pawn_promotion) {
   }
 
   // Give two-square moved pawns en passant flag
-  if (b.get(m.to).pce == piece::pawn) {
-    if (m.from / 10 == 3 && m.to / 10 == 5)
-      do_change(b, bh, m.to, square(piece::pawn_en_passant, color::black));
+  if (b.get(m.to_).pce == piece::pawn) {
+    if (m.from_ / 10 == 3 && m.to_ / 10 == 5)
+      do_change(b, bh, m.to_, square(piece::pawn_en_passant, color::black));
 
-    if (m.from / 10 == 8 && m.to / 10 == 6)
-      do_change(b, bh, m.to, square(piece::pawn_en_passant, color::white));
+    if (m.from_ / 10 == 8 && m.to_ / 10 == 6)
+      do_change(b, bh, m.to_, square(piece::pawn_en_passant, color::white));
   }
 
   // Lose castling potential
-  if (b.get(m.to).pce == piece::king_castle)
-    do_change(b, bh, m.to, square(piece::king, b.get(m.to).pce_color));
-  if (b.get(m.to).pce == piece::rook_castle)
-    do_change(b, bh, m.to, square(piece::rook, b.get(m.to).pce_color));
+  if (b.get(m.to_).pce == piece::king_castle)
+    do_change(b, bh, m.to_, square(piece::king, b.get(m.to_).pce_color));
+  if (b.get(m.to_).pce == piece::rook_castle)
+    do_change(b, bh, m.to_, square(piece::rook, b.get(m.to_).pce_color));
 
   board_change done; // default constructor gives the terminator
   bh.push_back(done);

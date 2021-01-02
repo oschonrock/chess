@@ -58,8 +58,8 @@ int ai_move(board& b, board_history& bh, color turn, int depth, move& best_move,
   for (move m: vmoves) {
     // if(depth == 8) // Temporary hack to show progress
     //  std::cout<<"\r"<<++progress<<"/"<<vmoves.size()<<std::flush;
-    
-    if (b.get(m.to).pce == piece::king || b.get(m.to).pce == piece::king_castle) {
+
+    if (b.get(m.to_).pce == piece::king || b.get(m.to_).pce == piece::king_castle) {
       best_score = turn == color::white ? 200 + depth : -200 - depth;
       bm         = m;
       break;

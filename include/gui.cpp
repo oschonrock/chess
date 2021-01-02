@@ -35,7 +35,7 @@ void print_board(const board& b, move last_move) {
     char s = sprites.at(b.get(i).pce);
     if (b.get(i).pce_color == color::black) s = tolower(static_cast<unsigned char>(s));
     std::cout << s;
-    if (last_move.from == i || last_move.to == i)
+    if (last_move.from_ == i || last_move.to_ == i)
       std::cout << '<';
     else
       std::cout << ' ';
@@ -57,16 +57,16 @@ move read_move(const move_set& valid_moves, color turn) {
 
   // Command to undo 1 or 2 moves (2 to revert AI+own)
   if (in == 0 || in == 1 || in == 2) {
-    ret.from = in;
+    ret.from_ = in;
     return ret;
   }
 
-  ret.to = in % 10 + in / 10 % 10 * 10;
+  ret.to_ = in % 10 + in / 10 % 10 * 10;
   in /= 100;
-  ret.from = in % 10 + in / 10 % 10 * 10;
+  ret.from_ = in % 10 + in / 10 % 10 * 10;
 
   for (const auto m: valid_moves)
-    if (m.from == ret.from && m.to == ret.to) return ret;
+    if (m.from_ == ret.from_ && m.to_ == ret.to_) return ret;
   std::cout << "Invalid move\n";
   return read_move(valid_moves, turn);
 }

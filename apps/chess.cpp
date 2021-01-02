@@ -22,7 +22,7 @@ int main() {
   std::cout << "Commands:\nyxyx: fromto move.\n0: regret move (last AI move will be reverted as "
                "well).\n1: change color (AI will make this move)\n2: exit.\n\n";
   board         b;
-  board_history h;
+  board_history bh;
   b.init();
 
   color turn     = color::white;
@@ -31,48 +31,32 @@ int main() {
   bool ai_has_king    = true;
   bool human_has_king = true;
 
-  constexpr bool run_perf_test = true;
-  if (run_perf_test) {
-    unsigned long t = time(nullptr);
-    std::cerr << "DEBUG: Perft(5) = (expecting 4897256): " << performance_test(b, h, 5, color::black);
-    t = time(nullptr) - t;
-    std::cout << "\nTime " << t << "\n";
-    return 0;
-  }
+  // return run_perf_test(b, bh);
+  // return run_ai_test(b, bh, turn);
 
-  constexpr bool run_ai_test = false;
-  if (run_ai_test) {
-    move          mv;
-    unsigned long t = time(nullptr);
-    ai_move(b, h, turn, 7, mv);
-    t = time(nullptr) - t;
-    std::cout << "\nAI Time: " << t << "\n";
-    return 0;
-  }
-
-  move mv{0, 0};
+  move mv;
   while (ai_has_king && human_has_king) {
     print_board(b, mv);
     if (turn == ai_color)
-      ai_move(b, h, turn, 7, mv);
+      ai_move(b, bh, turn, 7, mv);
     else
       mv = read_move(valid_moves(b, turn), turn);
 
-    if (mv.from == 0) {
-      undo_move(b, h);
-      undo_move(b, h);
+    if (mv.from_ == 0) {
+      undo_move(b, bh);
+      undo_move(b, bh);
       continue;
     }
-    if (mv.from == 1) {
+    if (mv.from_ == 1) {
       ai_color = flip_turn(ai_color);
       continue;
     }
-    if (mv.from == 2) {
+    if (mv.from_ == 2) {
       human_has_king = false;
       break;
     }
 
-    do_move(mv, b, h);
+    do_move(mv, b, bh);
     turn = flip_turn(turn);
 
     ai_has_king = human_has_king = false;

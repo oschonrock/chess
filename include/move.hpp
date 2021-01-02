@@ -21,18 +21,19 @@
 
 namespace chess {
 
-
 struct move {
-  ssize_t from, to;
-  move(ssize_t, ssize_t);
-  move();
+  move() = default;
+  move(ssize_t from, ssize_t to) : from_(from), to_(to) {}
+
+  ssize_t from_ = 0;
+  ssize_t to_ = 0;
 };
 
 struct board_change {
   board_change() : where(move_done) {} // terminator, at end of move sequence
   [[nodiscard]] bool is_terminator() const { return where == move_done; }
-  size_t where;
-  square old_square;
+  size_t             where;
+  square             old_square;
 
   constexpr static size_t move_done = board_size;
 };
@@ -51,4 +52,3 @@ void do_move(move, board&, board_history&, piece pawn_promotion = piece::queen);
 move_set valid_moves(board&, color turn); // This is the move generator
 
 } // namespace chess
-
