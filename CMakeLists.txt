@@ -33,7 +33,8 @@ include(scripts)
 conan_init(cmake)
 
 set(CMAKE_CXX_STANDARD 17)
-add_compile_options(-g -O3 -Wall -Wextra)
+
+add_compile_options(-Wall -Wextra -Werror)
 
 # this is not nice, but needed to add gv to includes in compiler_database for .hpp files which drives clangd highlighting
 include_directories(include)

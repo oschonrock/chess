@@ -6,6 +6,7 @@
  * TODO: prompt pawn promotion, instead of the default queen.
  * TODO: handle cases of no valid moves
  */
+
 #include "ai.hpp"
 #include "board.hpp"
 #include "gui.hpp"
@@ -20,6 +21,7 @@ int main() {
   std::cout << "\nChesscpu 1.0\n\n";
   std::cout << "Commands:\ne2e4: fromto move.\n0: regret move (last AI move will be reverted as "
                "well).\n1: change color (AI will make this move)\n2: exit.\n\n";
+
   board         b;
   b.init();
 
@@ -36,7 +38,7 @@ int main() {
   while (ai_has_king && human_has_king) {
     print_board(b, mv);
     if (turn == ai_color)
-      ai_move(b, turn, 7, mv);
+      ai_move(b, turn, ai_max_depth, mv);
     else
       mv = read_move(valid_moves(b, turn), turn);
 

@@ -5,10 +5,8 @@
 
 namespace chess {
 
-std::random_device rnd_seed;               // NOLINT
-std::mt19937       rnd_engine(rnd_seed()); // NOLINT
-
-void moveorder(move_set& ms) { std::shuffle(ms.begin(), ms.end(), rnd_engine); }
+static std::random_device rnd_seed;               // NOLINT
+static std::mt19937       rnd_engine(rnd_seed()); // NOLINT
 
 static int evaluate_leaf(const board& b) {
   int sum = 0;
@@ -40,24 +38,18 @@ static int evaluate_leaf(const board& b) {
   return sum;
 }
 
-int ai_move(board& b, color turn, int depth, move& best_move, int alpha,
-            int beta) {
-  /*
-  MoveSet valid = valid_moves(b, turn);
-  _bm = valid[mt()%valid.size()];
-  return 0;
-  */
-
+int ai_move(board& b, color turn, int depth, move& best_move, int alpha, int beta) {
   move bm;
   int  best_score = turn == color::white ? -300 : 300;
   if (depth == 0) return evaluate_leaf(b);
 
   move_set vmoves = valid_moves(b, turn);
-  moveorder(vmoves);
-  // int progress = 0; // Temporary hack to show progress
+  std::shuffle(vmoves.begin(), vmoves.end(), rnd_engine);
+
+  int progress = 0;
   for (move m: vmoves) {
-    // if(depth == 8) // Temporary hack to show progress
-    //  std::cout<<"\r"<<++progress<<"/"<<vmoves.size()<<std::flush;
+    if (depth == ai_max_depth)
+      std::cout << "\r" << ++progress << "/" << vmoves.size() << std::flush;
 
     if (b.get(m.to_).piece_ == piece::king || b.get(m.to_).piece_ == piece::king_castle) {
       best_score = turn == color::white ? 200 + depth : -200 - depth;
