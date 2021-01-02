@@ -19,7 +19,7 @@ unsigned long performance_test(board& b, int depth, color turn) {
     }
     do_move(m, b);
     leafs += performance_test(b, depth - 1, turn);
-    undo_move(b);
+    b.undo_move();
   }
   return leafs;
 }

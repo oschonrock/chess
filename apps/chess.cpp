@@ -30,7 +30,7 @@ int main() {
   bool ai_has_king    = true;
   bool human_has_king = true;
 
-  return run_perf_test(b);
+  // return run_perf_test(b);
   // return run_ai_test(b, turn);
 
   move mv;
@@ -42,8 +42,8 @@ int main() {
       mv = read_move(valid_moves(b, turn), turn);
 
     if (mv.from_ == 0) {
-      undo_move(b);
-      undo_move(b);
+      b.undo_move();
+      b.undo_move();
       continue;
     }
     if (mv.from_ == 1) {

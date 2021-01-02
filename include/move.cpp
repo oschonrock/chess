@@ -5,101 +5,82 @@
 
 namespace chess {
 
-void undo_move(board& b) {
-  if (b.bh_.empty()) return;
-  if (b.bh_.back().is_terminator()) b.bh_.pop_back();
-
-  while (!b.bh_.empty() && !b.bh_.back().is_terminator()) {
-    b.set(b.bh_.back().where, b.bh_.back().old_square);
-    b.bh_.pop_back();
-  }
-}
-
-static void do_change(board& b, size_t where, square new_square) {
-  board_change change;
-  change.old_square = b.get(where);
-  change.where      = where;
-  b.bh_.push_back(change);
-  b.set(where, new_square);
-}
-
 void do_move(move m, board& b, piece pawn_promotion) {
   // Pawn promotion
   if (b.get(m.from_).pce == piece::pawn && m.to_ / 10 == 2)
-    do_change(b, m.from_, square(pawn_promotion, color::white));
+    b.do_change(m.from_, square(pawn_promotion, color::white));
 
   if (b.get(m.from_).pce == piece::pawn && m.to_ / 10 == 9)
-    do_change(b, m.from_, square(pawn_promotion, color::black));
+    b.do_change(m.from_, square(pawn_promotion, color::black));
 
   // Move rook if castling
   if (b.get(m.from_).pce == piece::king_castle && (m.from_ - m.to_ == 2 || m.from_ - m.to_ == -2)) {
     if (m.to_ == 23) {
-      do_change(b, 21, square(piece::none, color::none));
-      do_change(b, 24, square(piece::rook, color::black));
+      b.do_change(21, square(piece::none, color::none));
+      b.do_change(24, square(piece::rook, color::black));
     }
 
     if (m.to_ == 27) {
-      do_change(b, 28, square(piece::none, color::none));
-      do_change(b, 26, square(piece::rook, color::black));
+      b.do_change(28, square(piece::none, color::none));
+      b.do_change(26, square(piece::rook, color::black));
     }
 
     if (m.to_ == 93) {
-      do_change(b, 91, square(piece::none, color::none));
-      do_change(b, 94, square(piece::rook, color::white));
+      b.do_change(91, square(piece::none, color::none));
+      b.do_change(94, square(piece::rook, color::white));
     }
 
     if (m.to_ == 97) {
-      do_change(b, 98, square(piece::none, color::none));
-      do_change(b, 96, square(piece::rook, color::white));
+      b.do_change(98, square(piece::none, color::none));
+      b.do_change(96, square(piece::rook, color::white));
     }
   }
 
   piece pawn_replaced = b.get(m.to_).pce;
   // Regular piece move
-  do_change(b, m.to_, b.get(m.from_));
-  do_change(b, m.from_, square(piece::none, color::none));
+  b.do_change(m.to_, b.get(m.from_));
+  b.do_change(m.from_, square(piece::none, color::none));
 
   // Pawn replaced empty square
   if (b.get(m.to_).pce == piece::pawn && pawn_replaced == piece::none) {
     // En passant move
     if (b.get(m.from_ - 1).pce == piece::pawn_en_passant &&
         (m.from_ - m.to_ == 11 || m.from_ - m.to_ == -9))
-      do_change(b, m.from_ - 1, square(piece::none, color::none));
+      b.do_change(m.from_ - 1, square(piece::none, color::none));
     else if (b.get(m.from_ + 1).pce == piece::pawn_en_passant &&
              (m.from_ - m.to_ == 9 || m.from_ - m.to_ == -11))
-      do_change(b, m.from_ + 1, square(piece::none, color::none));
+      b.do_change(m.from_ + 1, square(piece::none, color::none));
   }
 
   // clear flag of pawns with en passant potential
   for (size_t i = 1; i < 9; ++i) {
     if (b.get(50 + i).pce == piece::pawn_en_passant)
-      do_change(b, 50 + i, square(piece::pawn, color::black));
+      b.do_change(50 + i, square(piece::pawn, color::black));
     if (b.get(60 + i).pce == piece::pawn_en_passant)
-      do_change(b, 60 + i, square(piece::pawn, color::white));
+      b.do_change(60 + i, square(piece::pawn, color::white));
   }
 
   // Give two-square moved pawns en passant flag
   if (b.get(m.to_).pce == piece::pawn) {
     if (m.from_ / 10 == 3 && m.to_ / 10 == 5)
-      do_change(b, m.to_, square(piece::pawn_en_passant, color::black));
+      b.do_change(m.to_, square(piece::pawn_en_passant, color::black));
 
     if (m.from_ / 10 == 8 && m.to_ / 10 == 6)
-      do_change(b, m.to_, square(piece::pawn_en_passant, color::white));
+      b.do_change(m.to_, square(piece::pawn_en_passant, color::white));
   }
 
   // Lose castling potential
   if (b.get(m.to_).pce == piece::king_castle)
-    do_change(b, m.to_, square(piece::king, b.get(m.to_).pce_color));
+    b.do_change(m.to_, square(piece::king, b.get(m.to_).pce_color));
   if (b.get(m.to_).pce == piece::rook_castle)
-    do_change(b, m.to_, square(piece::rook, b.get(m.to_).pce_color));
+    b.do_change(m.to_, square(piece::rook, b.get(m.to_).pce_color));
 
-  board_change done; // default constructor gives the terminator
-  b.bh_.push_back(done);
+  b.terminate_change();
 }
 
 move_set valid_moves(board& b, color turn) {
   move_set ret;
-  color   enemy_color = (turn == color::white) ? color::black : color::white;
+  color   enemy_color = flip_turn(turn);
   int     pawn_dir    = (turn == color::white) ? -1 : 1;
 
   for (size_t from = 21 /*skip padding*/; from < 99 /*padding after this*/; ++from) {

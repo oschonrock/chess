@@ -15,10 +15,10 @@
 #pragma once
 
 #include <array>
-#include <vector>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <vector>
 
 namespace chess {
 
@@ -62,9 +62,6 @@ struct board_change {
 using board_history = std::vector<board_change>;
 
 class board {
-private:
-  std::array<square, board_size> squares;
-
 public:
   void init();
 
@@ -78,6 +75,30 @@ public:
     return squares[where];
   }
 
+  void undo_move() {
+    if (bh_.empty()) return;
+    if (bh_.back().is_terminator()) bh_.pop_back();
+
+    while (!bh_.empty() && !bh_.back().is_terminator()) {
+      set(bh_.back().where, bh_.back().old_square);
+      bh_.pop_back();
+    }
+  }
+
+  void do_change(size_t where, square new_square) {
+    board_change change;
+    change.old_square = get(where);
+    change.where      = where;
+    bh_.push_back(change);
+    set(where, new_square);
+  }
+
+  void terminate_change() {
+    bh_.push_back(board_change()); // default constructor gives the terminator
+  }
+  
+private:
+  std::array<square, board_size> squares;
   board_history bh_;
 };
 
