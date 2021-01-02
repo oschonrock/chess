@@ -13,7 +13,7 @@ unsigned long performance_test(board& b, int depth, color turn) {
   if (depth == 0) return 1;
   unsigned long leafs = 0;
   for (move m: valid_moves(b, turn)) {
-    if (b.get(m.to_).pce == piece::king || b.get(m.to_).pce == piece::king_castle) {
+    if (b.get(m.to_).piece_ == piece::king || b.get(m.to_).piece_ == piece::king_castle) {
       ++leafs;
       continue;
     }

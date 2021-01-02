@@ -1,23 +1,25 @@
-/*
-    File: board.h
-
-    Content on and manipulation of a chess board implemented as 10x12 squares,
-    with default out_of_border values.
-
-    "magic" numbers will be used, they aren't magic if you know this structure.
-    Source way too messy with a lot of variable names and variable calculations instead of plain
-   numbers.
-
-    Author: Ken Rouwas
-    Date 2017-09-14
+/**
+ * File: board.h
+ *
+ * Content on and manipulation of a chess board implemented as 10x12 squares,
+ * with default out_of_border values.
+ *
+ * "magic" numbers will be used, they aren't magic if you know this structure.
+ * Source way too messy with a lot of variable names and variable calculations instead of plain
+ * numbers.
+ *
+ * Author: Ken Rouwas
+ * Date 2017-09-14
+ *
+ * Refactored and expanded upon by Oliver Schönrock - 2021
 */
-
 #pragma once
 
 #include <array>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <sys/types.h>
 #include <vector>
 
 namespace chess {
@@ -44,22 +46,24 @@ enum class piece {
 
 struct square {
   square() = default;
-  square(piece p, color c) : pce_color(c), pce(p) {}
+  square(piece p, color c) : piece_color_(c), piece_(p) {}
 
-  color pce_color = color::none;
-  piece pce       = piece::out_of_board;
+  color piece_color_ = color::none;
+  piece piece_       = piece::out_of_board;
 };
 
 struct board_change {
-  board_change() : where(move_done) {} // terminator, at end of move sequence
-  [[nodiscard]] bool is_terminator() const { return where == move_done; }
-  size_t             where;
-  square             old_square;
+  board_change() : where_(move_done) {} // default is terminator, at end of move sequence
+
+  board_change(ssize_t where, square old_square) : where_(where), old_square_(old_square) {}
+
+  [[nodiscard]] bool is_terminator() const { return where_ == move_done; }
+
+  size_t where_;
+  square old_square_;
 
   constexpr static size_t move_done = board_size;
 };
-
-using board_history = std::vector<board_change>;
 
 class board {
 public:
@@ -67,12 +71,12 @@ public:
 
   void set(const size_t where, square s) {
     if (where >= board_size) throw std::out_of_range("board::set : out of range error");
-    squares[where] = s;
+    squares_[where] = s;
   }
 
   [[nodiscard]] square get(const size_t where) const {
     if (where >= board_size) throw std::out_of_range("board::get : out of range error");
-    return squares[where];
+    return squares_[where];
   }
 
   void undo_move() {
@@ -80,26 +84,23 @@ public:
     if (bh_.back().is_terminator()) bh_.pop_back();
 
     while (!bh_.empty() && !bh_.back().is_terminator()) {
-      set(bh_.back().where, bh_.back().old_square);
+      set(bh_.back().where_, bh_.back().old_square_);
       bh_.pop_back();
     }
   }
 
   void do_change(size_t where, square new_square) {
-    board_change change;
-    change.old_square = get(where);
-    change.where      = where;
-    bh_.push_back(change);
+    bh_.emplace_back(where, get(where));
     set(where, new_square);
   }
 
   void terminate_change() {
-    bh_.push_back(board_change()); // default constructor gives the terminator
+    bh_.emplace_back(); // default constructor gives the terminator
   }
-  
+
 private:
-  std::array<square, board_size> squares;
-  board_history bh_;
+  std::array<square, board_size> squares_;
+  std::vector<board_change>      bh_;
 };
 
 } // namespace chess

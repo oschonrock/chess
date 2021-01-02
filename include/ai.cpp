@@ -13,10 +13,10 @@ void moveorder(move_set& ms) { std::shuffle(ms.begin(), ms.end(), rnd_engine); }
 static int evaluate_leaf(const board& b) {
   int sum = 0;
   for (size_t i = 21; i < 99; ++i) {
-    if (b.get(i).pce_color == color::none) continue;
-    int c = b.get(i).pce_color == color::white ? 1 : -1;
+    if (b.get(i).piece_color_ == color::none) continue;
+    int c = b.get(i).piece_color_ == color::white ? 1 : -1;
     int v = 0;
-    switch (b.get(i).pce) {
+    switch (b.get(i).piece_) {
     case piece::pawn:
     case piece::pawn_en_passant:
       v = 1;
@@ -59,7 +59,7 @@ int ai_move(board& b, color turn, int depth, move& best_move, int alpha,
     // if(depth == 8) // Temporary hack to show progress
     //  std::cout<<"\r"<<++progress<<"/"<<vmoves.size()<<std::flush;
 
-    if (b.get(m.to_).pce == piece::king || b.get(m.to_).pce == piece::king_castle) {
+    if (b.get(m.to_).piece_ == piece::king || b.get(m.to_).piece_ == piece::king_castle) {
       best_score = turn == color::white ? 200 + depth : -200 - depth;
       bm         = m;
       break;

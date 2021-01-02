@@ -1,6 +1,3 @@
-// File: gui.cpp
-// This is quick, ugly, pragmatic, temporary.
-
 #include "gui.hpp"
 #include <cctype>
 #include <iostream>
@@ -25,11 +22,11 @@ static const std::map<piece, unsigned char> sprites = // NOLINT
      {piece::queen,           'Q'}};
 // clang-format on
 
-constexpr std::string_view term_reset    = "\x1b[0m";
-constexpr std::string_view term_fg_blue  = "\x1b[38;5;4m";
-constexpr std::string_view term_fg_gold  = "\x1b[38;5;3m";
-constexpr std::string_view term_bg_white = "\x1b[48;5;15m";
-constexpr std::string_view term_bg_black = "\x1b[48;5;0m";
+const std::string_view term_reset    = "\x1b[0m";
+const std::string_view term_fg_blue  = "\x1b[38;5;4m";
+const std::string_view term_fg_gold  = "\x1b[38;5;3m";
+const std::string_view term_bg_white = "\x1b[48;5;15m";
+const std::string_view term_bg_black = "\x1b[48;5;0m";
 
 static void set_fg_color(color pce_color) {
   std::cout << ((pce_color == color::black) ? term_fg_blue : term_fg_gold);
@@ -48,13 +45,13 @@ void print_board(const board& b, move last_move) {
       std::cout << "\n " << 10 - i / 10 << " ";
       continue;
     }
-    unsigned char s = sprites.at(b.get(i).pce);
-    set_fg_color(b.get(i).pce_color);
-    if (b.get(i).pce_color == color::black) s = std::tolower(s);
+    unsigned char s = sprites.at(b.get(i).piece_);
+    set_fg_color(b.get(i).piece_color_);
+    if (b.get(i).piece_color_ == color::black) s = std::tolower(s);
     std::cout << (((i + ((i / 10) % 2)) % 2) != 0 ? term_bg_white : term_bg_black);
     std::cout << " " << s;
     if (last_move.from_ == i || last_move.to_ == i) {
-      set_fg_color(b.get(last_move.to_).pce_color);
+      set_fg_color(b.get(last_move.to_).piece_color_);
       std::cout << '<';
     } else {
       std::cout << " ";

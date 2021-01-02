@@ -1,12 +1,11 @@
-/*
-    // File: main.cpp
-
-    TODO: don't allow moves that leaves king in check, and count check-mate as victory. Hence, perft
-   will be off by a few.
-    TODO: prompt pawn promotion, instead of the default queen.
-    TODO: handle cases of no valid moves
-*/
-
+/**
+ * File: main.cpp
+ *
+ * TODO: don't allow moves that leaves king in check, and count check-mate as victory. Hence, perft
+ * will be off by a few.
+ * TODO: prompt pawn promotion, instead of the default queen.
+ * TODO: handle cases of no valid moves
+ */
 #include "ai.hpp"
 #include "board.hpp"
 #include "gui.hpp"
@@ -60,8 +59,8 @@ int main() {
 
     ai_has_king = human_has_king = false;
     for (size_t i = 21; i < 99; ++i) { // board.h about these magic numbers
-      if (b.get(i).pce == piece::king || b.get(i).pce == piece::king_castle) {
-        if (b.get(i).pce_color == ai_color) {
+      if (b.get(i).piece_ == piece::king || b.get(i).piece_ == piece::king_castle) {
+        if (b.get(i).piece_color_ == ai_color) {
           ai_has_king = true;
         } else {
           human_has_king = true;
