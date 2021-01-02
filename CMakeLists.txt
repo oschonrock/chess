@@ -39,4 +39,4 @@ add_compile_options(-g -O3 -Wall -Wextra)
 include_directories(include)
 
 add_executable(chess apps/chess.cpp)
-target_sources(chess PRIVATE include/board.cpp include/move.cpp include/ai.cpp include/gui.cpp)
+target_sources(chess PRIVATE include/board.cpp include/move.cpp include/ai.cpp include/gui.cpp include/util.cpp)

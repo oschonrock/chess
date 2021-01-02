@@ -5,31 +5,6 @@
 
 namespace chess {
 
-color flip_turn(color turn) {
-  if (turn == color::white) return color::black;
-  return color::white;
-}
-
-square::square(piece p, color c) {
-  pce       = p;
-  pce_color = c;
-}
-
-square::square() {
-  pce       = piece::out_of_board;
-  pce_color = color::none;
-}
-
-void board::set(const size_t where, square s) {
-  if (where >= board_size) return;
-  squares[where] = s;
-}
-
-square board::get(const size_t where) const {
-  if (where >= board_size) return square(piece::out_of_board, color::none);
-  return squares[where];
-}
-
 void board::init() {
   // Place pawns
   for (size_t i = 0; i < 8; ++i) {
@@ -54,23 +29,6 @@ void board::init() {
   // Empty squares inbetween the pieces
   for (int x = 0; x < 8; ++x)
     for (int y = 0; y < 4; ++y) set(41 + x + y * 10, square(piece::none, color::none));
-}
-
-// for testing purposes
-unsigned long perft(board& b, board_history& h, int depth, color turn) {
-  turn = flip_turn(turn);
-  if (depth == 0) return 1;
-  unsigned long leafs = 0;
-  for (move m: valid_moves(b, turn)) {
-    if (b.get(m.to).pce == piece::king || b.get(m.to).pce == piece::king_castle) {
-      ++leafs;
-      continue;
-    }
-    do_move(m, b, h);
-    leafs += perft(b, h, depth - 1, turn);
-    undo_move(b, h);
-  }
-  return leafs;
 }
 
 } // namespace chess

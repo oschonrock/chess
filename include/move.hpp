@@ -21,7 +21,6 @@
 
 namespace chess {
 
-const size_t move_done = board_size;
 
 struct move {
   ssize_t from, to;
@@ -30,8 +29,12 @@ struct move {
 };
 
 struct board_change {
+  board_change() : where(move_done) {} // terminator, at end of move sequence
+  [[nodiscard]] bool is_terminator() const { return where == move_done; }
   size_t where;
   square old_square;
+
+  constexpr static size_t move_done = board_size;
 };
 
 using board_history = std::vector<board_change>;

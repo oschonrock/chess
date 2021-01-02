@@ -14,9 +14,9 @@ move::move() = default;
 
 void undo_move(board& b, board_history& bh) {
   if (bh.empty()) return;
-  if (bh.back().where == move_done) bh.pop_back();
+  if (bh.back().is_terminator()) bh.pop_back();
 
-  while (!bh.empty() && bh.back().where != move_done) {
+  while (!bh.empty() && !bh.back().is_terminator()) {
     b.set(bh.back().where, bh.back().old_square);
     bh.pop_back();
   }
@@ -100,8 +100,7 @@ void do_move(move m, board& b, board_history& bh, piece pawn_promotion) {
   if (b.get(m.to).pce == piece::rook_castle)
     do_change(b, bh, m.to, square(piece::rook, b.get(m.to).pce_color));
 
-  board_change done;
-  done.where = move_done;
+  board_change done; // default constructor gives the terminator
   bh.push_back(done);
 }
 

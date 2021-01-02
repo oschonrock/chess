@@ -1,11 +1,12 @@
 // File: board.cpp
 
 #include "board.hpp"
+#include "move.hpp"
 
 namespace chess {
 
 // for testing purposes
-unsigned long perft(board& b, board_history& h, int depth, color turn) {
+unsigned long performance_test(board& b, board_history& bh, int depth, color turn) {
   turn = flip_turn(turn);
   if (depth == 0) return 1;
   unsigned long leafs = 0;
@@ -14,9 +15,9 @@ unsigned long perft(board& b, board_history& h, int depth, color turn) {
       ++leafs;
       continue;
     }
-    do_move(m, b, h);
-    leafs += perft(b, h, depth - 1, turn);
-    undo_move(b, h);
+    do_move(m, b, bh);
+    leafs += performance_test(b, bh, depth - 1, turn);
+    undo_move(b, bh);
   }
   return leafs;
 }

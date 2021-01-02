@@ -34,7 +34,7 @@ int main() {
   constexpr bool run_perf_test = true;
   if (run_perf_test) {
     unsigned long t = time(nullptr);
-    std::cout << "DEBUG: Perft(5) result (expecting 4897256): " << perft(b, h, 5, color::black);
+    std::cerr << "DEBUG: Perft(5) = (expecting 4897256): " << performance_test(b, h, 5, color::black);
     t = time(nullptr) - t;
     std::cout << "\nTime " << t << "\n";
     return 0;

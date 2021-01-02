@@ -15,10 +15,11 @@
 #pragma once
 
 #include "board.hpp"
+#include "move.hpp"
 
 namespace chess {
 
 // for testing purposes
-unsigned long perft(board& b, board_history& h, int depth, color turn);
+unsigned long performance_test(board& b, board_history& bh, int depth, color turn);
 
 } // namespace chess

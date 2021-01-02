@@ -15,14 +15,17 @@
 #pragma once
 
 #include <array>
+#include <cstdlib>
+#include <exception>
+#include <iostream>
 
 namespace chess {
 
-const size_t board_size = 10 * 12;
+constexpr size_t board_size = 10 * 12;
 
 enum class color { white, black, none };
 
-color flip_turn(color turn);
+inline color flip_turn(color turn) { return (turn == color::white) ? color::black : color::white; }
 
 enum class piece {
   king,        // a king without castle potential
@@ -39,10 +42,11 @@ enum class piece {
 };
 
 struct square {
-  color pce_color;
-  piece pce;
-  square(piece, color);
-  square();
+  square() = default;
+  square(piece p, color c) : pce_color(c), pce(p) {}
+
+  color pce_color = color::none;
+  piece pce       = piece::out_of_board;
 };
 
 class board {
@@ -50,9 +54,17 @@ private:
   std::array<square, board_size> squares;
 
 public:
-  void                 init();
-  void                 set(size_t where, square);
-  [[nodiscard]] square get(size_t where) const;
+  void init();
+
+  void set(const size_t where, square s) {
+    if (where >= board_size) throw std::out_of_range("board::set : out of range error");
+    squares[where] = s;
+  }
+
+  [[nodiscard]] square get(const size_t where) const {
+    if (where >= board_size) throw std::out_of_range("board::get : out of range error");
+    return squares[where];
+  }
 };
 
 } // namespace chess
