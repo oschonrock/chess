@@ -12,7 +12,7 @@
  * Date 2017-09-14
  *
  * Refactored and expanded upon by Oliver Schönrock - 2021
-*/
+ */
 #pragma once
 
 #include <array>
@@ -30,7 +30,7 @@ enum class color { white, black, none };
 
 inline color flip_turn(color turn) { return (turn == color::white) ? color::black : color::white; }
 
-enum class piece {
+enum class piece : int {
   king,        // a king without castle potential
   king_castle, // a king with castle potential
   queen,
