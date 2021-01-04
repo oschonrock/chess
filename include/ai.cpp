@@ -40,7 +40,7 @@ static constexpr std::array<int, static_cast<int>(piece::out_of_board) -
     }();
 
 static std::random_device rnd_seed;               // NOLINT
-static std::mt19937       rnd_engine(rnd_seed()); // NOLINT
+static std::minstd_rand   rnd_engine(rnd_seed()); // NOLINT faster than mt
 
 static int evaluate_leaf(const board& b) {
   int sum = 0;
