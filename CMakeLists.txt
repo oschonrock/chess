@@ -37,7 +37,11 @@ set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wextra -Werror)
 
 # this is not nice, but needed to add gv to includes in compiler_database for .hpp files which drives clangd highlighting
-include_directories(include)
+include_directories(include include/toolbelt include/ryu)
 
 add_executable(chess apps/chess.cpp)
-target_sources(chess PRIVATE include/board.cpp include/move.cpp include/ai.cpp include/gui.cpp include/util.cpp)
+target_sources(chess PRIVATE include/board.cpp include/move.cpp include/ai.cpp include/gui.cpp include/util.cpp include/threadpool/threadpool.cpp)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+target_link_libraries(chess PRIVATE Threads::Threads)
