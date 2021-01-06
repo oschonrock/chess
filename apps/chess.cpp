@@ -22,7 +22,7 @@ int main() {
   std::cout << "Commands:\ne2e4: fromto move.\n0: regret move (last AI move will be reverted as "
                "well).\n1: change color (AI will make this move)\n2: exit.\n\n";
 
-  board         b;
+  board b;
   b.init();
 
   color turn     = color::white;
