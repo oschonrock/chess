@@ -13,3 +13,6 @@
 [submodule "include/ryu"]
 	path = include/ryu
 	url = https://github.com/ulfjack/ryu
+[submodule "include/threadpool"]
+	path = include/threadpool
+	url = https://github.com/oschonrock/thread_pool_cpp17.git
