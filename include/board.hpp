@@ -103,4 +103,5 @@ private:
   std::vector<board_change>      bh_;
 };
 
+std::string where_to_str(size_t where);
 } // namespace chess

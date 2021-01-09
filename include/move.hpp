@@ -26,6 +26,12 @@ struct move {
 
   ssize_t from_ = 0;
   ssize_t to_   = 0;
+
+  friend std::ostream& operator<<(std::ostream& os, const move& mv)  {
+    os << where_to_str(mv.from_) << where_to_str(mv.to_);
+    return os;
+  }
+
 };
 
 using move_set = std::vector<move>;

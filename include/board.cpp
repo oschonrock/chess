@@ -31,4 +31,8 @@ void board::init() {
     for (int y = 0; y < 4; ++y) set(41 + x + y * 10, square(piece::none, color::none));
 }
 
+std::string where_to_str(size_t where) {
+  return std::string{static_cast<char>((where - 1) % 10 + 'a')} +
+         std::string{static_cast<char>(8 - (where / 10 - 2) + '0')};
+}
 } // namespace chess

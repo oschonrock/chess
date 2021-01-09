@@ -6,8 +6,6 @@
 #include <iostream>
 #include <random>
 
-static thread_pool pool; // NOLINT
-
 namespace chess {
 
 // initialise piece value lookup array at compile time for performance
@@ -42,9 +40,6 @@ static constexpr std::array<int, static_cast<int>(piece::out_of_board) -
       return a;
     }();
 
-static std::random_device rnd_seed;               // NOLINT
-static std::minstd_rand   rnd_engine(1); // NOLINT faster than mt
-
 static int evaluate_leaf(const board& b) {
   int sum = 0;
   for (size_t i = 21; i < 99; ++i) {
@@ -66,6 +61,10 @@ struct board_task {
 };
 
 static std::vector<board_task> board_tasks;
+
+static thread_pool pool; // NOLINT
+static std::random_device rnd_seed;               // NOLINT
+static std::minstd_rand   rnd_engine(1); // NOLINT faster than mt
 
 int ai_move(board& b, color turn, int depth, move& best_move, int alpha, int beta, bool top_level) {
   move bm;
